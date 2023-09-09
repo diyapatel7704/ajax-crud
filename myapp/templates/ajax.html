@@ -1,0 +1,65 @@
+<script>
+    $('#submit').click(function(){
+        data = {
+            csrfmiddlewaretoken : $('input[name=csrfmiddlewaretoken]').val(),
+            name : $('#name').val(),
+            email : $('#email').val(),
+            pwd : $('#pwd').val()
+        }
+        console.log(data)
+
+        $.ajax({
+            url : "{% url 'add-data' %}",
+            method : "POST",
+            data : data,
+            success : function(response){
+                console.log(response.msg)
+                alert(response.msg)
+                $('form')[0].reset()
+                console.log(response.users)
+                var x = response.users
+                let output = ''
+                for(i=0;i<x.length;i++){
+                    output += "<tr>" + 
+                                "<td>" + x[i].name +"</td>" +
+                                "<td>" + x[i].email +"</td>" +
+                                "<td>"+ x[i].password +"</td>" +
+                                '<td><input type="button" class="btn btn-danger" value="Delete" data-sid="' + x[i].id + '" id="del"></td>'
+                            "</tr>"
+                 
+                }
+            
+                $('#tbody').html(output)
+            }
+        })
+    })
+
+    $('#tbody').on('click','#del',function(){
+        data = {
+            id : $(this).attr('data-sid')
+        }
+
+        $.ajax({
+            url : "{% url 'delete-data' %}",
+            method : "POST",
+            data : data,
+            success : function(response){
+                alert(response.msg)
+                console.log(response.users)
+                var x = response.users
+                let output = ''
+                for(i=0;i<x.length;i++){
+                    output += "<tr>" + 
+                                "<td>" + x[i].name +"</td>" +
+                                "<td>" + x[i].email +"</td>" +
+                                "<td>"+ x[i].password +"</td>" +
+                                '<td><input type="button" class="btn btn-danger" value="Delete" data-sid="' + x[i].id + '" id="del"></td>'
+                            "</tr>"
+                 
+                }
+            
+                $('#tbody').html(output)
+            }
+        })
+    })
+</script>
